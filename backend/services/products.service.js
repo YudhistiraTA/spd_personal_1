@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import products, { Product } from "../models/products.model.js";
 
 /**
@@ -112,7 +113,7 @@ const updateProduct = async (id, data) => {
   }
 
   const result = await products.findOneAndUpdate(
-    { _id: id, isDeleted: false },
+    { _id: new ObjectId(id), isDeleted: false },
     { $set: updateData },
     { returnDocument: "after" },
   );
@@ -127,7 +128,7 @@ const updateProduct = async (id, data) => {
  */
 const softDeleteProduct = async (id) => {
   const result = await products.findOneAndUpdate(
-    { _id: id, isDeleted: false },
+    { _id: new ObjectId(id), isDeleted: false },
     { $set: { isDeleted: true } },
     { returnDocument: "after" },
   );
