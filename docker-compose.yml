@@ -1,0 +1,40 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:3000
+    ports:
+      - "5173:80"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_CONNECTIONSTRING: mongodb://mongo:27017/app
+    depends_on:
+      - mongo
+    networks:
+      - internal
+
+  mongo:
+    image: mongo:8
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
+    environment:
+      MONGO_INITDB_DATABASE: personal_1
+    networks:
+      - internal
+    # No ports exposed — only reachable within the internal network
+
+volumes:
+  mongo_data:
+
+networks:
+  internal:
