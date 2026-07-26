@@ -3,24 +3,37 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      args:
-        VITE_API_BASE_URL: http://localhost:3000
+      # Left unset (relative URLs) so the browser calls the same origin the
+      # site is served from, and nginx proxies /v1 through to the backend.
+      # Only override this if the frontend and backend are served from
+      # different origins.
     ports:
-      - "5173:80"
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - internal
 
   backend:
     build:
       context: ./backend
       dockerfile: dockerfile
-    ports:
-      - "3000:3000"
     environment:
       PORT: 3000
       DB_CONNECTIONSTRING: mongodb://mongo:27017/app
+      ACCESS_TOKEN_SECRET: rahasia-access
+      ACCESS_TOKEN_EXPIRES_IN: 15m
+      REFRESH_TOKEN_SECRET: rahasia-refresh
+      REFRESH_TOKEN_EXPIRES_IN: 7d
+      BCRYPT_SALT_ROUNDS: 10
+    restart: unless-stopped
     depends_on:
       - mongo
     networks:
       - internal
+    # No ports exposed to the host — only reachable via the frontend's
+    # nginx reverse proxy on the internal network.
 
   mongo:
     image: mongo:8
@@ -29,6 +42,7 @@ services:
       - ./mongo-init:/docker-entrypoint-initdb.d:ro
     environment:
       MONGO_INITDB_DATABASE: personal_1
+    restart: unless-stopped
     networks:
       - internal
     # No ports exposed — only reachable within the internal network

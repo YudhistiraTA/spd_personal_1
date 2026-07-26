@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getProductBySlug } from '../api/products.js'
+import Header from '../components/Header.jsx'
 
 function StarRow({ rating }) {
   const full = Math.round(rating)
@@ -37,9 +38,7 @@ export default function ProductDetail() {
 
   return (
     <div className="page">
-      <header className="site-header">
-        <Link to="/" className="back-link">← Back to products</Link>
-      </header>
+      <Header />
       <main>
         {loading && (
           <p className="status">

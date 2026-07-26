@@ -8,7 +8,9 @@ RUN npm install
 
 COPY . .
 
-ARG VITE_API_BASE_URL=http://localhost:3000
+# Empty by default so the app fetches from the same origin (relative URLs)
+# and relies on the nginx reverse proxy to reach the backend.
+ARG VITE_API_BASE_URL=
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 RUN npm run build

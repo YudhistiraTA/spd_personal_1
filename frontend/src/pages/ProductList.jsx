@@ -1,6 +1,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { getProducts } from '../api/products.js'
 import ProductCard from '../components/ProductCard.jsx'
+import Header from '../components/Header.jsx'
 
 export default function ProductList() {
   const [{ products, loading, error, pagination }, setState] = useState({
@@ -28,12 +29,7 @@ export default function ProductList() {
 
   return (
     <div className="page">
-      <header className="site-header">
-        <div>
-          <h1>Shop<span className="accent">.</span></h1>
-          <p className="header-tagline">Discover our curated collection</p>
-        </div>
-      </header>
+      <Header />
       <main>
         {(loading || isPending) && (
           <p className="status">
