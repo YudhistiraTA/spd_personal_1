@@ -1,10 +1,22 @@
 import { useEffect, useState, useCallback } from 'react'
+import LogRocket from 'logrocket'
 import * as authApi from '../api/auth.js'
 import { AuthContext } from './auth-context.js'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  // Tie the LogRocket session to the logged-in user (once known) so replays
+  // can be looked up by name/email instead of just an anonymous session id.
+  useEffect(() => {
+    if (user) {
+      LogRocket.identify(user._id, {
+        name: user.name,
+        email: user.email,
+      })
+    }
+  }, [user])
 
   useEffect(() => {
     let cancelled = false

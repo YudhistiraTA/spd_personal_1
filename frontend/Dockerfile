@@ -13,6 +13,10 @@ COPY . .
 ARG VITE_API_BASE_URL=
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
+# LogRocket app/project ID, injected at build time (Vite bakes env vars in).
+ARG VITE_LOGROCKET_ID=
+ENV VITE_LOGROCKET_ID=$VITE_LOGROCKET_ID
+
 RUN npm run build
 
 # ── Serve stage ───────────────────────────────────────────────

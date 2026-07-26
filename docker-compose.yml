@@ -3,10 +3,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-      # Left unset (relative URLs) so the browser calls the same origin the
-      # site is served from, and nginx proxies /v1 through to the backend.
-      # Only override this if the frontend and backend are served from
-      # different origins.
+      args:
+        # Left unset (relative URLs) so the browser calls the same origin the
+        # site is served from, and nginx proxies /v1 through to the backend.
+        # Only override this if the frontend and backend are served from
+        # different origins.
+        VITE_API_BASE_URL: ""
+        VITE_LOGROCKET_ID: ${VITE_LOGROCKET_ID:-}
     ports:
       - "80:80"
     restart: unless-stopped
@@ -22,9 +25,9 @@ services:
     environment:
       PORT: 3000
       DB_CONNECTIONSTRING: mongodb://mongo:27017/app
-      ACCESS_TOKEN_SECRET: rahasia-access
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET:-}
       ACCESS_TOKEN_EXPIRES_IN: 15m
-      REFRESH_TOKEN_SECRET: rahasia-refresh
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:-}
       REFRESH_TOKEN_EXPIRES_IN: 7d
       BCRYPT_SALT_ROUNDS: 10
     restart: unless-stopped

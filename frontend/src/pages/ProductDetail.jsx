@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import LogRocket from 'logrocket'
 import { getProductBySlug } from '../api/products.js'
 import Header from '../components/Header.jsx'
 
@@ -26,8 +27,14 @@ export default function ProductDetail() {
     let cancelled = false
     getProductBySlug(slug)
       .then((data) => {
-        if (!cancelled)
+        if (!cancelled) {
           setState({ product: data, loading: false, error: null })
+          LogRocket.track('Product Viewed', {
+            slug: data.slug,
+            name: data.name,
+            price: data.price,
+          })
+        }
       })
       .catch((err) => {
         if (!cancelled)
